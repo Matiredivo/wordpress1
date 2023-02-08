@@ -14,9 +14,14 @@ class AQUILA_THEME {
 
    protected function __construct() {
 
+    //Load class
+
+    Assets::get_instance();
+    
+    Menus::get_instance();
 
 		$this->setup_hooks();
-	}
+	} 
 
 
  protected function setup_hooks() {
@@ -24,32 +29,71 @@ class AQUILA_THEME {
    /**
     *  Actions.
     */
+    add_action('after_setup_theme', [ $this, 'setup_theme' ] );
 
-   add_action('wp_enqueue_scripts', [ $this, 'register_styles' ] );
-
-   add_action('wp_enqueue_scripts', [ $this, 'register_scripts' ] );
  }
+ public function setup_theme() {
 
-public function register_styles(){
-    //Register Style
-    wp_register_style('style.css', get_stylesheet_uri(), [] , filemtime( get_template_directory() . '/style.css'), 'all' );
-    wp_register_style( 'bootstrap-css',get_template_directory_uri() . '/assets/src/library/css/bootstrap.min.css', [], false, 'all' );
+  /**
+   * Let WordPress manage the document title.
+   * By adding theme support, we declare that this theme does not use a
+   * hard-coded <title> tag in the document head, and expect WordPress to
+   * provide it for us.
+   */
+  add_theme_support( 'title-tag' );
 
-    //Enqueue Style
-    wp_enqueue_style('style.css');
-    wp_enqueue_style('bootstrap-css');
+  /**
+   * Custom logo.
+   *
+   * @see Adding custom logo
+   * @link https://developer.wordpress.org/themes/functionality/custom-logo/#adding-custom-logo-support-to-your-theme
+   */
+  add_theme_support(
+    'custom-logo',
+    [
+      'header-text' => ['site-title','site-description',],
+      'height'      => 100,
+      'width'       => 400,
+      'flex-height' => true,
+      'flex-width'  => true,
+    ]
+  );
+add_theme_support(
+  'custom-background',
+  [
+    'default-color' => 'ffffff',
+    'default-image' => '',
+    'default-repeat' => 'no-repeat',
+  ]
+);
+add_theme_support('post-thumbnails');
+
+add_theme_support('customize-selective-refresh-widgets');
+
+add_theme_support('automatic-feed-links');
+
+add_theme_support(
+  'html5',
+  [
+    'search-form',
+    'comment-form',
+    'comment-list',
+    'gallery',
+    'caption',
+    'script',
+    'style',
+  ]
+);
+
+add_editor_style();
+add_theme_support( 'wp-block-styles' );
+
+add_theme_support( 'align-wide' );
+
+global $content_width;
+		if ( ! isset( $content_width ) ) {
+			$content_width = 1240;
+		}
 }
-
-public function register_scripts(){
-    //Register Script
-    wp_register_script( 'main.js', get_template_directory_uri() . '/assets/main.js', [], filemtime( get_template_directory() . '/assets/main.js'), true);
-    wp_register_script('bootstrap-js', get_template_directory_uri() . '/assets/src/library/js/bootstrap.min.js', [ 'jquery' ], false, true);
-    
-    //Enqueue Script
-    wp_enqueue_script('main.js');
-    wp_enqueue_script('bootstrap.js');
-}
-
-
 }
 
